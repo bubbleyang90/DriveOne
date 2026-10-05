@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="DriveOne 本地多网盘文件浏览与下载工作台">
+  <title>DriveOne · 我的云空间</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main-content">跳到文件工作区</a>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="工作区导航">
+      <a class="brand" href="/" aria-label="DriveOne 首页"><span class="brand-mark" aria-hidden="true">D<span></span></span><span>Drive<span class="brand-light">One</span><small>让云端，更简单</small></span></a>
+      <div class="workspace-label">个人工作区 <span>LOCAL</span></div>
+      <button class="nav-item nav-home active" id="home-button" type="button"><span data-icon="layers"></span>我的云空间<span class="nav-count">6</span></button>
+      <button class="nav-item" id="downloads-button" type="button"><span data-icon="download"></span>下载中心<span class="nav-count" id="download-count" hidden>0</span></button>
+      <div class="sidebar-section-title">网盘入口 <span>06</span></div>
+      <nav id="provider-nav" aria-label="选择网盘"></nav>
+      <div class="sidebar-bottom">
+        <div class="local-note"><span class="local-shield" data-icon="shield"></span><div><strong>你的文件，由你掌控</strong><p>授权与下载由本机服务处理</p></div></div>
+        <button class="nav-item settings-nav" id="settings-button" type="button"><span data-icon="settings"></span>设置与连接<span data-icon="chevronRight"></span></button>
+        <div class="sidebar-footer"><span class="status-dot" id="server-dot"></span><span id="server-status">正在连接本地服务</span><span>v0.1 MVP</span></div>
+      </div>
+    </aside>
+
+    <div class="main-shell">
+      <header class="topbar"><div class="topbar-location"><span data-icon="grid"></span><span>个人工作区</span><span class="topbar-slash">/</span><strong>我的云空间</strong></div><div class="topbar-actions"><span class="local-badge"><span class="status-dot"></span>本地运行</span><button class="icon-button" id="top-downloads-button" type="button" aria-label="打开下载中心"><span data-icon="download"></span></button><button class="icon-button" id="top-settings-button" type="button" aria-label="打开设置"><span data-icon="settings"></span></button><span class="avatar" aria-label="本地工作区">我</span></div></header>
+      <main id="main-content" tabindex="-1">
+        <section class="workspace-heading"><div><div class="eyebrow">ALL YOUR CLOUDS, IN ONE PLACE</div><h1>我的云空间<span class="heading-dot">.</span></h1><p>连接你的网盘，让每一份文件触手可及</p></div><button class="button button-outline" id="mode-button" type="button" disabled><span data-icon="sparkles"></span><span>体验演示</span></button></section>
+        <div class="mode-banner" id="demo-banner" hidden><span data-icon="flask"></span><div><strong>演示模式</strong><span>这里是虚构的示例文件。下载仅生成本地演示样本，不会访问你的网盘。</span></div><button id="exit-demo-button" type="button">退出演示<span data-icon="arrowRight"></span></button></div>
+        <div class="offline-banner" id="offline-banner" hidden><span data-icon="wifiOff"></span><span>连接已断开。请确认网络和本地服务，再刷新重试。</span><button type="button" id="offline-retry">重试</button></div>
+        <section aria-labelledby="accounts-title" class="accounts-section"><div class="section-heading"><h2 id="accounts-title">我的网盘 <span id="connection-summary">正在读取连接状态</span></h2><button class="text-button" id="manage-button" type="button">管理连接<span data-icon="arrowRight"></span></button></div><div class="provider-cards" id="provider-cards" aria-live="polite"><div class="card-skeleton"></div><div class="card-skeleton"></div><div class="card-skeleton"></div></div></section>
+
+        <section class="file-workspace" aria-labelledby="files-title">
+          <div class="file-heading"><div class="file-title-group"><span class="file-section-icon" data-icon="folder"></span><h2 id="files-title">文件工作区</h2><span class="provider-label" id="current-provider-label">选择网盘</span></div><button class="icon-button" id="refresh-button" type="button" aria-label="刷新当前文件夹" disabled><span data-icon="refresh"></span></button></div>
+          <div class="file-toolbar"><nav class="breadcrumbs" id="breadcrumbs" aria-label="文件夹路径"></nav><form id="search-form" class="search-box" role="search"><span data-icon="search"></span><label class="sr-only" for="search-input">搜索所选网盘中的文件名</label><input id="search-input" type="search" placeholder="搜索此网盘的文件名" autocomplete="off" maxlength="200" disabled><button type="submit" class="icon-button" aria-label="搜索" id="search-button" disabled><span data-icon="arrowRight"></span></button></form></div>
+          <div class="results-toolbar"><div id="results-summary" class="results-summary" aria-live="polite">连接网盘后，在这里浏览你的文件</div><div class="view-actions"><label for="sort-select">本页排序</label><select id="sort-select" aria-label="当前已加载文件排序"><option value="name">名称 A–Z</option><option value="modified">修改时间</option><option value="size">文件大小</option></select><span class="toolbar-divider"></span><div class="view-toggle" role="group" aria-label="显示方式"><button type="button" class="icon-button selected" id="list-view-button" aria-label="列表视图" aria-pressed="true"><span data-icon="list"></span></button><button type="button" class="icon-button" id="grid-view-button" aria-label="网格视图" aria-pressed="false"><span data-icon="grid"></span></button></div></div></div>
+          <div id="file-region" class="file-region" aria-busy="false"><div class="empty-state"><span class="empty-illustration" data-icon="cloud"></span><h3>正在连接本地服务</h3><p>马上就好，你的云空间即将就绪</p></div></div>
+          <div class="pagination" id="pagination" hidden><span id="pagination-note">已加载的文件仅在本页排序</span><button type="button" id="load-more-button" class="button button-outline">加载更多<span data-icon="chevronDown"></span></button></div>
+          <div class="file-footer"><span><span data-icon="lock"></span>通过官方授权访问 · 不接收网盘密码</span><span id="file-footer-note">本地文件管理工作台</span></div>
+        </section>
+        <footer class="page-footer"><span>一个工作台，连接你的云端世界</span><span>DriveOne <span class="footer-dot">·</span> LOCAL CLOUD EXPLORER</span></footer>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="metadata-dialog" class="side-dialog" aria-labelledby="metadata-title"><div class="dialog-heading"><h2 id="metadata-title">文件详情</h2><button class="icon-button" data-close="metadata-dialog" type="button" aria-label="关闭文件详情"><span data-icon="close"></span></button></div><div id="metadata-content" class="dialog-body"></div></dialog>
+  <dialog id="downloads-dialog" class="side-dialog" aria-labelledby="downloads-title"><div class="dialog-heading"><div><h2 id="downloads-title">下载中心</h2><p>文件保存到运行 DriveOne 的电脑</p></div><button class="icon-button" data-close="downloads-dialog" type="button" aria-label="关闭下载中心"><span data-icon="close"></span></button></div><div class="download-destination"><span data-icon="folder"></span><div><strong>本地下载目录</strong><code id="downloads-directory">正在读取…</code></div></div><div class="downloads-help" id="download-help">关闭此面板不会停止下载</div><div id="downloads-content" class="dialog-body"></div></dialog>
+  <dialog id="settings-dialog" class="settings-dialog" aria-labelledby="settings-title"><div class="dialog-heading"><div><div class="eyebrow">YOUR CLOUD CONNECTIONS</div><h2 id="settings-title">设置与连接</h2><p>使用官方 OAuth 授权，连接你自己的网盘</p></div><button class="icon-button" data-close="settings-dialog" type="button" aria-label="关闭设置"><span data-icon="close"></span></button></div><div class="dialog-body"><div class="settings-intro"><span data-icon="shield"></span><p>这是本地应用。先在服务商控制台创建你自己的应用，按项目说明配置 Client ID 并重启服务，再连接账号。请勿在此输入网盘密码。</p></div><div id="settings-providers"></div><div class="settings-footnote"><strong>关于下载</strong><p>文件由本地服务下载到上方“下载中心”所示目录，而非浏览器的默认下载文件夹。服务运行期间才会继续下载。</p></div></div></dialog>
+  <div id="toast-region" class="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
+  <noscript><div class="noscript">DriveOne 需要启用 JavaScript 才能连接本地服务并浏览文件。</div></noscript>
+</body>
+</html>
